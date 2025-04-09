@@ -1,54 +1,68 @@
-# React + TypeScript + Vite
+# RAGsystem 前端專案
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+本專案為 **RAGsystem** 的前端介面，提供多工作區、多對話管理，並支援管理者後台設定與文件批次上傳功能。
 
-Currently, two official plugins are available:
+## 主要功能
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **多工作區與多對話管理**：可建立多個工作區，每個工作區下有多個對話，方便組織知識與討論。
+- **管理者後台設定**：
+  - API 金鑰管理
+  - 嵌入模型設定
+  - 向量資料庫連線
+  - 事件日誌查看
+  - 隱私權與資料政策
+  - 語音辨識模型設定
+  - 文字分割策略設定
+- **一般使用者偏好設定**：
+  - 工作區聊天室偏好
+  - 介面主題與外觀
+  - 偏好語言模型選擇
+- **文件批次上傳**：
+  - 支援多檔案同時上傳
+  - 可為每個文件設定可見的工作區權限
+  - 預設所有工作區皆可見，亦可個別調整
+  - 以彈出式視窗操作，方便管理
 
-## Expanding the ESLint configuration
+## 安裝與啟動
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+```bash
+# 安裝依賴
+npm install
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+# 啟動開發伺服器
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+預設伺服器運行於 `http://localhost:5173`
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 使用說明
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+- 左側側邊欄可切換工作區與對話
+- 點擊左下角「設定」按鈕，展開管理者或使用者設定
+- 點擊左下角「上傳」按鈕，開啟文件批次上傳視窗
+- 文件上傳後，可為每個文件設定可見的工作區
+- 管理者可進行系統層級設定，一般使用者僅能調整個人偏好
+
+## 權限分級
+
+| 角色       | 可調整項目                                               |
+|------------|----------------------------------------------------------|
+| 一般使用者 | 工作區聊天室、介面外觀、偏好語言模型                     |
+| 管理者     | API 金鑰、嵌入模型、向量資料庫、事件日誌、隱私權政策、語音辨識模型、文字分割策略 |
+
+## 技術棧
+
+- React 18
+- TypeScript
+- Tailwind CSS
+- Vite
+
+## 版本控制
+
+專案已初始化 Git，並推送至：
+
+`git@github.com:ammosu/rag-frontend.git`
+
+---
+
+本專案為內部知識管理系統前端，結合 RAG 技術，提升企業知識整合與智能問答能力。
