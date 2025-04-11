@@ -54,7 +54,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           }}
         />
       )}
-      <div className="w-64 bg-gray-900 border-r border-gray-800 flex flex-col shadow-lg">
+      <div className="w-64 bg-white text-gray-900 border-r border-gray-200 dark:bg-gray-900 dark:text-gray-100 dark:border-gray-800 flex flex-col shadow-lg hidden md:flex">
         <div className="flex flex-col h-full">
           <div className="p-4 border-b border-gray-700">
             <div className="flex items-center justify-between">
@@ -145,7 +145,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                           className={`flex items-center justify-between p-2 rounded-md cursor-pointer ${
                             selectedWorkspace === 'general' && selectedChat === chat
                               ? 'bg-blue-600'
-                              : 'hover:bg-gray-700'
+                              : 'hover:bg-gray-100 dark:hover:bg-gray-700'
                           }`}
                           onClick={() => {
                             setSelectedWorkspace('general');
@@ -167,7 +167,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                       <div key={workspace.name} className="mb-2">
                         <div
                           className={`flex items-center justify-between p-2 rounded-md cursor-pointer ${
-                            selectedWorkspace === workspace.name ? 'bg-gray-700' : 'hover:bg-gray-700'
+                            selectedWorkspace === workspace.name ? 'bg-gray-200 dark:bg-gray-700' : 'hover:bg-gray-100 dark:hover:bg-gray-700'
                           }`}
                           onClick={() => toggleWorkspace(workspace.name)}
                         >
@@ -185,26 +185,48 @@ const Sidebar: React.FC<SidebarProps> = ({
 
                         {expandedWorkspaces.includes(workspace.name) && (
                           <div className="ml-8 mt-1 space-y-1">
-                            {workspace.chats.map((chat) => (
+                            {/* 新對話 */}
+                            {workspace.chats.includes('新對話') && (
                               <div
-                                key={chat}
-                                className={`flex items-center justify-between p-2 rounded-md cursor-pointer ${
-                                  selectedWorkspace === workspace.name && selectedChat === chat
-                                    ? 'bg-blue-600'
-                                    : 'hover:bg-gray-700'
-                                }`}
+                                key="新對話"
+                                className={`flex items-center justify-between p-2 rounded-md cursor-pointer mb-1
+                                  ${selectedWorkspace === workspace.name && selectedChat === '新對話'
+                                    ? 'bg-gray-200 text-gray-900 dark:bg-gray-600 dark:text-gray-100'
+                                    : 'bg-gray-100 hover:bg-gray-200 text-gray-900 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-100'
+                                  }`}
+                                onClick={() => {
+                                  setSelectedWorkspace(workspace.name);
+                                  setSelectedChat('新對話');
+                                }}
                               >
-                                <div
-                                  className="flex items-center space-x-2"
-                                  onClick={() => {
-                                    setSelectedWorkspace(workspace.name);
-                                    setSelectedChat(chat);
-                                  }}
-                                >
-                                  <MessageSquare size={16} className="text-gray-400" />
-                                  <span className="text-sm">{chat}</span>
+                                <div className="flex items-center space-x-2">
+                                  <PlusCircle size={16} className="text-gray-400 dark:text-gray-300" />
+                                  <span className="text-sm font-semibold">新對話</span>
                                 </div>
-                                {chat !== '新對話' && (
+                              </div>
+                            )}
+                            {/* 歷史聊天紀錄 */}
+                            {workspace.chats
+                              .filter((chat) => chat !== '新對話')
+                              .map((chat) => (
+                                <div
+                                  key={chat}
+                                  className={`flex items-center justify-between p-2 rounded-md cursor-pointer ${
+                                    selectedWorkspace === workspace.name && selectedChat === chat
+                                      ? 'bg-blue-600'
+                                      : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+                                  }`}
+                                >
+                                  <div
+                                    className="flex items-center space-x-2"
+                                    onClick={() => {
+                                      setSelectedWorkspace(workspace.name);
+                                      setSelectedChat(chat);
+                                    }}
+                                  >
+                                    <MessageSquare size={16} className="text-gray-400" />
+                                    <span className="text-sm">{chat}</span>
+                                  </div>
                                   <div className="flex items-center opacity-0 group-hover:opacity-100 hover:opacity-100">
                                     <button
                                       className="p-1 rounded-full hover:bg-gray-600"
@@ -231,9 +253,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                                       </svg>
                                     </button>
                                   </div>
-                                )}
-                              </div>
-                            ))}
+                                </div>
+                              ))}
                           </div>
                         )}
                       </div>

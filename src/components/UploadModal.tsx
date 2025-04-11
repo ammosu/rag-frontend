@@ -24,16 +24,18 @@ const UploadModal: React.FC<UploadModalProps> = ({ workspaces, onClose, onUpload
   };
 
   const handleWorkspaceChange = (index: number, ws: string) => {
-    setSelectedFiles((prev) => {
-      const updated = [...prev];
-      const current = updated[index];
-      if (current.workspaces.includes(ws)) {
-        current.workspaces = current.workspaces.filter((w) => w !== ws);
-      } else {
-        current.workspaces.push(ws);
-      }
-      return updated;
-    });
+    setSelectedFiles((prev) =>
+      prev.map((item, i) => {
+        if (i !== index) return item;
+        const isSelected = item.workspaces.includes(ws);
+        return {
+          ...item,
+          workspaces: isSelected
+            ? item.workspaces.filter((w) => w !== ws)
+            : [...item.workspaces, ws],
+        };
+      })
+    );
   };
 
   const handleUpload = () => {
@@ -60,12 +62,14 @@ const UploadModal: React.FC<UploadModalProps> = ({ workspaces, onClose, onUpload
                   {workspaces.map((ws) => (
                     <button
                       key={ws}
+                      type="button"
                       onClick={() => handleWorkspaceChange(index, ws)}
-                      className={`px-3 py-1 rounded-full border ${
+                      className={`px-3 py-1 rounded-full border transition-colors ${
                         item.workspaces.includes(ws)
-                          ? 'bg-blue-600 border-blue-600 text-white'
-                          : 'bg-gray-700 border-gray-600 text-gray-300'
+                          ? 'bg-blue-600 border-blue-600 text-white hover:bg-blue-700'
+                          : 'bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600'
                       }`}
+                      title={item.workspaces.includes(ws) ? '點擊取消選取' : '點擊選取'}
                     >
                       {ws}
                     </button>
