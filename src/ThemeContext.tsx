@@ -25,8 +25,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       if (t === 'system') {
         const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         root.classList.toggle('dark', isDark);
+        root.setAttribute('data-theme', isDark ? 'dark' : 'light');
       } else {
         root.classList.toggle('dark', t === 'dark');
+        root.setAttribute('data-theme', t);
       }
     };
     applyTheme(theme);
@@ -35,6 +37,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const handler = (e: MediaQueryListEvent) => {
         if (theme === 'system') {
           document.documentElement.classList.toggle('dark', e.matches);
+          document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
         }
       };
       window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', handler);

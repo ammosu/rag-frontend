@@ -1,77 +1,82 @@
 import React from 'react';
 import { PlusCircle, FileText } from 'lucide-react';
 
-const RightSidebar: React.FC = () => {
-  return (
-    <div className="w-64 bg-white text-gray-900 border-l border-gray-200 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700 flex flex-col hidden md:flex">
-      <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="font-medium">知識庫檔案</h2>
-          <button className="p-1 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-900 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-100">
-            <PlusCircle size={16} className="text-gray-400 dark:text-gray-400" />
-          </button>
-        </div>
+interface RightSidebarProps {
+  show: boolean;
+}
 
-        {/* Tab navigation */}
-        <div className="flex border-b border-gray-200 dark:border-gray-700">
-          <button className="py-2 px-3 border-b-2 border-blue-500 text-blue-600 text-sm font-medium dark:text-blue-400">
-            文件
-          </button>
-          <button className="py-2 px-3 text-gray-500 hover:text-gray-700 text-sm font-medium dark:text-gray-400 dark:hover:text-gray-300">
-            對話資訊
-          </button>
+const RightSidebar: React.FC<RightSidebarProps> = ({ show }) => {
+  return (
+    <div className={`w-64 bg-base-100 text-base-content border-l border-base-200 dark:bg-base-200 dark:text-base-content dark:border-base-300 flex flex-col md:flex transition-all duration-200 ${show ? '' : 'hidden'}`}>
+      <div className="card rounded-none shadow-none border-b border-base-200 dark:border-base-300">
+        <div className="card-body p-4 pb-2">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="font-medium">知識庫檔案</h2>
+            <button className="btn btn-sm btn-ghost">
+              <PlusCircle size={16} className="text-base-content" />
+            </button>
+          </div>
+          {/* Tab navigation */}
+          <div className="tabs tabs-bordered mb-2">
+            <a className="tab tab-active">文件</a>
+            <a className="tab">對話資訊</a>
+          </div>
         </div>
       </div>
 
       <div className="flex-1 overflow-y-auto p-3 space-y-2">
-        <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">10個檔案 | 87MB</div>
-
-        {[
-          { name: '報告A-12.pdf', size: '28MB', date: '2025-02-15', extra: '32 pages' },
-          { name: '用戶研究2025-Q1.docx', size: '15MB', date: '2025-03-22', extra: '45 pages' },
-          { name: '競爭分析報告.pptx', size: '22MB', date: '2025-03-30', extra: '18 slides' },
-          { name: '產品規劃.xlsx', size: '4MB', date: '2025-01-10', extra: '8 sheets' },
-          { name: '技術白皮書.pdf', size: '18MB', date: '2025-02-28', extra: '24 pages' },
-        ].map((file) => (
-          <div key={file.name} className="p-2 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-md cursor-pointer dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-100">
-            <div className="flex items-center justify-between mb-1">
-              <div className="flex items-center space-x-2">
-                <FileText size={14} className="text-blue-600 dark:text-blue-400" />
-                <span className="text-sm font-medium">{file.name}</span>
+        <div className="text-sm text-base-content/60 mb-1">10個檔案 | 87MB</div>
+        <div className="space-y-2">
+          {[
+            { name: '報告A-12.pdf', size: '28MB', date: '2025-02-15', extra: '32 pages' },
+            { name: '用戶研究2025-Q1.docx', size: '15MB', date: '2025-03-22', extra: '45 pages' },
+            { name: '競爭分析報告.pptx', size: '22MB', date: '2025-03-30', extra: '18 slides' },
+            { name: '產品規劃.xlsx', size: '4MB', date: '2025-01-10', extra: '8 sheets' },
+            { name: '技術白皮書.pdf', size: '18MB', date: '2025-02-28', extra: '24 pages' },
+          ].map((file) => (
+            <div key={file.name} className="card card-compact bg-base-200 hover:bg-base-300 transition-colors cursor-pointer">
+              <div className="card-body p-3">
+                <div className="flex items-center justify-between mb-1">
+                  <div className="flex items-center space-x-2">
+                    <FileText size={16} className="text-primary" />
+                    <span className="text-sm font-medium">{file.name}</span>
+                  </div>
+                  <span className="badge badge-outline badge-info">{file.size}</span>
+                </div>
+                <div className="text-xs text-base-content/60">{file.date} | {file.extra}</div>
               </div>
-              <span className="text-xs bg-gray-200 text-gray-700 dark:bg-gray-600 dark:text-gray-100 px-1.5 py-0.5 rounded">{file.size}</span>
             </div>
-            <div className="text-xs text-gray-500 dark:text-gray-400">{file.date} | {file.extra}</div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
-      <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <div className="text-sm font-medium">RAG系統狀態</div>
-            <span className="bg-green-500 text-white text-xs px-2 py-0.5 rounded-full">在線</span>
-          </div>
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-500 dark:text-gray-400">索引狀態</span>
-            <span>最後更新: 10分鐘前</span>
-          </div>
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-500 dark:text-gray-400">模型</span>
-            <span>Claude 3.7 Sonnet</span>
-          </div>
-          <div className="mt-3 pt-3 border-t border-gray-700">
+      <div className="card rounded-none shadow-none border-t border-base-200 dark:border-base-300">
+        <div className="card-body p-4">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="text-sm font-medium">RAG系統狀態</div>
+              <span className="badge badge-success badge-sm">在線</span>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-base-content/60">索引狀態</span>
+              <span>最後更新: 10分鐘前</span>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-base-content/60">模型</span>
+              <span>Claude 3.7 Sonnet</span>
+            </div>
+            <div className="divider my-2"></div>
             <div className="text-sm font-medium mb-2">當前對話資訊</div>
             <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-500 dark:text-gray-400">創建時間</span>
+              <span className="text-base-content/60">創建時間</span>
               <span>2025-04-08</span>
             </div>
             <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-500 dark:text-gray-400">對話數量</span>
+              <span className="text-base-content/60">對話數量</span>
               <span>8 則訊息</span>
             </div>
             <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-500 dark:text-gray-400">檢索次數</span>
+              <span className="text-base-content/60">檢索次數</span>
               <span>12 次</span>
             </div>
           </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import { PlusCircle, Database, ChevronDown, MessageSquare, Settings, Upload, Book } from 'lucide-react';
 import { useState } from 'react';
 import UploadModal from './UploadModal';
+import FilePermissionManager from './FilePermissionManager';
 
 interface Workspace {
   name: string;
@@ -20,6 +21,18 @@ interface SidebarProps {
  
 }
 
+interface SidebarProps {
+  workspaces: Workspace[];
+  generalChats: string[];
+  selectedWorkspace: string;
+  selectedChat: string;
+  expandedWorkspaces: string[];
+  toggleWorkspace: (workspace: string) => void;
+  setSelectedWorkspace: (workspace: string) => void;
+  setSelectedChat: (chat: string) => void;
+  onShowFilePermissionManager?: () => void;
+}
+
 const Sidebar: React.FC<SidebarProps> = ({
   workspaces,
   generalChats,
@@ -29,6 +42,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   toggleWorkspace,
   setSelectedWorkspace,
   setSelectedChat,
+  onShowFilePermissionManager,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showSettings, setShowSettings] = useState(false);
@@ -54,7 +68,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           }}
         />
       )}
-      <div className="w-64 bg-white text-gray-900 border-r border-gray-200 dark:bg-gray-900 dark:text-gray-100 dark:border-gray-800 flex flex-col shadow-lg hidden md:flex">
+      <div className="w-64 bg-base-200 text-base-content border-r border-base-300 flex flex-col shadow-lg hidden md:flex">
         <div className="flex flex-col h-full">
           <div className="p-4 border-b border-gray-700">
             <div className="flex items-center justify-between">
@@ -68,7 +82,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           </div>
 
           <div className="p-4 border-b border-gray-800">
-            <button className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-md py-2 px-4 flex items-center justify-center space-x-2 mb-3">
+            <button className="btn btn-primary w-full flex items-center justify-center space-x-2 mb-3">
               <PlusCircle size={18} />
               <span>新建工作區</span>
             </button>
@@ -77,7 +91,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               placeholder="搜尋工作區或對話"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-3 text-sm focus:outline-none focus:border-blue-500"
+              className="input input-bordered w-full text-sm"
             />
           </div>
 
@@ -86,22 +100,19 @@ const Sidebar: React.FC<SidebarProps> = ({
               {showSettings ? (
                 <>
                   <div>
-                    <div className="text-sm font-medium text-gray-400 mb-2">一般使用者設定</div>
-                    <div className="space-y-1">
+                    <div className="menu-title text-sm font-medium text-base-content/60 mb-2">一般使用者設定</div>
+                    <ul className="menu bg-base-200 rounded-box p-0">
                       {['工作區聊天室', '介面外觀', '偏好語言模型'].map((item) => (
-                        <div
-                          key={item}
-                          className="flex items-center p-2 rounded-md cursor-pointer hover:bg-gray-700"
-                        >
-                          <span className="text-sm text-gray-300">{item}</span>
-                        </div>
+                        <li key={item}>
+                          <a className="menu-item text-sm text-base-content/80 hover:bg-base-300">{item}</a>
+                        </li>
                       ))}
-                    </div>
+                    </ul>
                   </div>
 
                   <div>
-                    <div className="text-sm font-medium text-gray-400 mb-2">管理者後台設定</div>
-                    <div className="space-y-1">
+                    <div className="menu-title text-sm font-medium text-base-content/60 mb-2">管理者後台設定</div>
+                    <ul className="menu bg-base-200 rounded-box p-0">
                       {[
                         'API金鑰管理',
                         '嵌入模型設定',
@@ -111,53 +122,105 @@ const Sidebar: React.FC<SidebarProps> = ({
                         '語音辨識模型',
                         '文字分割策略',
                       ].map((item) => (
-                        <div
-                          key={item}
-                          className="flex items-center p-2 rounded-md cursor-pointer hover:bg-gray-700"
-                        >
-                          <span className="text-sm text-gray-300">{item}</span>
-                        </div>
+                        <li key={item}>
+                          <a className="menu-item text-sm text-base-content/80 hover:bg-base-300">{item}</a>
+                        </li>
                       ))}
-                    </div>
+                      <li>
+                        <a
+                          className="menu-item text-sm text-base-content/80 hover:bg-base-300"
+                          onClick={() => {
+                            if (onShowFilePermissionManager) onShowFilePermissionManager();
+                            setShowSettings(false);
+                          }}
+                        >
+                          文件權限管理
+                        </a>
+                      </li>
+                    </ul>
                   </div>
                 </>
-              ) : showUpload ? (
-                <div>
-                  <div className="text-sm font-medium text-gray-400 mb-2">上傳文件</div>
-                  <div className="space-y-2">
-                    <input
-                      type="file"
-                      className="w-full text-sm text-gray-300 bg-gray-800 border border-gray-700 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
-                    />
-                    <button className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-md py-2 px-4">
-                      上傳
-                    </button>
-                  </div>
-                </div>
               ) : (
                 <>
+                  {/* ...原本的對話與工作區列表... */}
                   <div>
                     <div className="text-sm font-medium text-gray-400 mb-2">一般對話</div>
                     <div className="space-y-1">
-                      {filteredGeneralChats.map((chat) => (
-                        <div
-                          key={chat}
-                          className={`flex items-center justify-between p-2 rounded-md cursor-pointer ${
-                            selectedWorkspace === 'general' && selectedChat === chat
-                              ? 'bg-blue-600'
-                              : 'hover:bg-gray-100 dark:hover:bg-gray-700'
-                          }`}
-                          onClick={() => {
-                            setSelectedWorkspace('general');
-                            setSelectedChat(chat);
-                          }}
-                        >
-                          <div className="flex items-center space-x-2">
-                            <MessageSquare size={16} className="text-gray-400" />
-                            <span className="text-sm">{chat}</span>
-                          </div>
-                        </div>
-                      ))}
+                      {filteredGeneralChats.map(chat => {
+                        if (chat === '新對話') {
+                          return (
+                            <div
+                              key={chat}
+                              className={`btn btn-primary btn-sm w-full flex justify-start items-center gap-2 mb-1 shadow-none border-0
+                                ${selectedWorkspace === 'general' && selectedChat === chat ? '' : 'btn-outline'}
+                              `}
+                              style={{textAlign: 'left'}}
+                              onClick={() => {
+                                setSelectedWorkspace('general');
+                                setSelectedChat(chat);
+                              }}
+                            >
+                              <PlusCircle
+                                size={16}
+                                className={
+                                  selectedWorkspace === 'general' && selectedChat === chat
+                                    ? 'text-white'
+                                    : 'text-primary'
+                                }
+                              />
+                              <span className="text-sm font-semibold">新對話</span>
+                            </div>
+                          );
+                        } else {
+                          return (
+                            <div
+                              key={chat}
+                              className={`flex items-center justify-between p-2 rounded-md cursor-pointer ${
+                                selectedWorkspace === 'general' && selectedChat === chat
+                                  ? 'bg-blue-600'
+                                  : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+                              }`}
+                            >
+                              <div
+                                className="flex items-center space-x-2"
+                                onClick={() => {
+                                  setSelectedWorkspace('general');
+                                  setSelectedChat(chat);
+                                }}
+                              >
+                                <MessageSquare size={16} className="text-gray-400" />
+                                <span className="text-sm">{chat}</span>
+                              </div>
+                              <div className="flex items-center">
+                                <button
+                                  className="p-1 rounded-full hover:bg-gray-600"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    alert(`刪除對話: ${chat}`);
+                                  }}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="14"
+                                    height="14"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    className="text-gray-400 hover:text-red-400"
+                                  >
+                                    <path d="M3 6h18"></path>
+                                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                                  </svg>
+                                </button>
+                              </div>
+                            </div>
+                          );
+                        }
+                      })}
                     </div>
                   </div>
 
@@ -189,20 +252,26 @@ const Sidebar: React.FC<SidebarProps> = ({
                             {workspace.chats.includes('新對話') && (
                               <div
                                 key="新對話"
-                                className={`flex items-center justify-between p-2 rounded-md cursor-pointer mb-1
+                                className={`btn btn-primary btn-sm w-full flex justify-start items-center gap-2 mb-1 shadow-none border-0
                                   ${selectedWorkspace === workspace.name && selectedChat === '新對話'
-                                    ? 'bg-gray-200 text-gray-900 dark:bg-gray-600 dark:text-gray-100'
-                                    : 'bg-gray-100 hover:bg-gray-200 text-gray-900 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-100'
+                                    ? ''
+                                    : 'btn-outline'
                                   }`}
+                                style={{textAlign: 'left'}}
                                 onClick={() => {
                                   setSelectedWorkspace(workspace.name);
                                   setSelectedChat('新對話');
                                 }}
                               >
-                                <div className="flex items-center space-x-2">
-                                  <PlusCircle size={16} className="text-gray-400 dark:text-gray-300" />
-                                  <span className="text-sm font-semibold">新對話</span>
-                                </div>
+                                <PlusCircle
+                                  size={16}
+                                  className={
+                                    selectedWorkspace === workspace.name && selectedChat === '新對話'
+                                      ? 'text-white'
+                                      : 'text-primary'
+                                  }
+                                />
+                                <span className="text-sm font-semibold">新對話</span>
                               </div>
                             )}
                             {/* 歷史聊天紀錄 */}
@@ -268,25 +337,25 @@ const Sidebar: React.FC<SidebarProps> = ({
           <div className="p-4 border-t border-gray-800">
             <div className="flex items-center justify-around space-x-2">
               <button
-                className="p-2 rounded-md hover:bg-gray-700 border border-gray-600"
+                className="btn btn-square btn-ghost"
                 onClick={() => {
                   setShowSettings(!showSettings);
                   setShowUpload(false);
                 }}
               >
-                <Settings size={20} className="text-gray-400" />
+                <Settings size={20} />
               </button>
               <button
-                className="p-2 rounded-md hover:bg-gray-700 border border-gray-600"
+                className="btn btn-square btn-ghost"
                 onClick={() => {
                   setShowUpload(!showUpload);
                   setShowSettings(false);
                 }}
               >
-                <Upload size={20} className="text-gray-400" />
+                <Upload size={20} />
               </button>
-              <button className="p-2 rounded-md hover:bg-gray-700 border border-gray-600">
-                <Book size={20} className="text-gray-400" />
+              <button className="btn btn-square btn-ghost">
+                <Book size={20} />
               </button>
             </div>
           </div>
