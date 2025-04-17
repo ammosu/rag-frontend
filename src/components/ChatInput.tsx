@@ -9,7 +9,7 @@ interface ChatInputProps {
 
 const ChatInput: React.FC<ChatInputProps> = ({ message, setMessage, selectedChat }) => {
   return (
-    <div className="p-4 border-t border-gray-200 bg-white text-gray-900 dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100">
+    <div className="w-full max-w-2xl mx-auto rounded-xl shadow bg-base-100 px-4 py-3 mb-4 border border-base-200 text-gray-900 dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100">
       <div className="flex items-center space-x-2 mb-2">
         <div className="flex items-center space-x-2">
           <button className="p-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-900 border border-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-100 dark:border-gray-600">
@@ -51,7 +51,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ message, setMessage, selectedChat
             type="text"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            className="w-full bg-white border border-gray-300 text-gray-900 rounded-md py-3 px-4 pr-10 focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+            className="w-full bg-white border border-gray-300 text-gray-900 rounded-xl py-3 px-4 pr-10 focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
             placeholder="輸入問題或指令..."
           />
           <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">

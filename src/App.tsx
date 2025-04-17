@@ -9,19 +9,22 @@ import UserSettings from './components/UserSettings';
 
 import FilePermissionManager from './components/FilePermissionManager';
 
-const App: React.FC = () => {
-  const [selectedWorkspace, setSelectedWorkspace] = useState('研究報告');
-  const [selectedChat, setSelectedChat] = useState('市場分析討論');
-  const [message, setMessage] = useState('');
-  const [expandedWorkspaces, setExpandedWorkspaces] = useState<string[]>(['研究報告']);
-  const [showUserSettings, setShowUserSettings] = useState(false);
-  const [showFilePermissionManager, setShowFilePermissionManager] = useState(false);
-  const [showRightSidebar, setShowRightSidebar] = useState(false); // 預設隱藏
+import type { FilePermission } from './components/FilePermissionManager';
+import type { Workspace } from './components/Sidebar';
 
-  const toggleRightSidebar = () => setShowRightSidebar((prev) => !prev);
+const App: React.FC = () => {
+  const [selectedWorkspace, setSelectedWorkspace] = useState<string>('研究報告');
+  const [selectedChat, setSelectedChat] = useState<string>('市場分析討論');
+  const [message, setMessage] = useState<string>('');
+  const [expandedWorkspaces, setExpandedWorkspaces] = useState<string[]>(['研究報告']);
+  const [showUserSettings, setShowUserSettings] = useState<boolean>(false);
+  const [showFilePermissionManager, setShowFilePermissionManager] = useState<boolean>(false);
+  const [showRightSidebar, setShowRightSidebar] = useState<boolean>(false); // 預設隱藏
+
+  const toggleRightSidebar = (): void => setShowRightSidebar((prev) => !prev);
 
   // mock data for FilePermissionManager
-  const mockFiles = [
+  const mockFiles: FilePermission[] = [
     {
       fileId: '1',
       fileName: '文件A.pdf',
@@ -33,11 +36,11 @@ const App: React.FC = () => {
       allowedWorkspaces: ['產品文檔'],
     },
   ];
-  const mockWorkspaces = ['研究報告', '產品文檔', '財務資料', '法律文件'];
+  const mockWorkspaces: string[] = ['研究報告', '產品文檔', '財務資料', '法律文件'];
 
-  const generalChats = ['日常對話', '技術問答', '新對話'];
+  const generalChats: string[] = ['日常對話', '技術問答', '新對話'];
 
-  const workspaces = [
+  const workspaces: Workspace[] = [
     {
       name: '研究報告',
       chats: ['市場分析討論', '產品競爭力評估', '用戶行為研究', '新對話'],
@@ -56,7 +59,7 @@ const App: React.FC = () => {
     },
   ];
 
-  const toggleWorkspace = (workspace: string) => {
+  const toggleWorkspace = (workspace: string): void => {
     if (expandedWorkspaces.includes(workspace)) {
       setExpandedWorkspaces(expandedWorkspaces.filter((w) => w !== workspace));
     } else {
@@ -86,11 +89,6 @@ const App: React.FC = () => {
           onToggleRightSidebar={toggleRightSidebar}
         />
         <ChatArea selectedWorkspace={selectedWorkspace} selectedChat={selectedChat} />
-        <ChatInput
-          message={message}
-          setMessage={setMessage}
-          selectedChat={selectedChat}
-        />
       </div>
 
       {showRightSidebar && <RightSidebar show={true} />}
@@ -113,7 +111,7 @@ const App: React.FC = () => {
         <FilePermissionManager
           files={mockFiles}
           workspaces={mockWorkspaces}
-          onChange={(updated) => {
+          onChange={(updated: FilePermission[]) => {
             console.log('更新後的權限:', updated);
           }}
           onClose={() => setShowFilePermissionManager(false)}

@@ -2,9 +2,8 @@ import React from 'react';
 import { PlusCircle, Database, ChevronDown, MessageSquare, Settings, Upload, Book } from 'lucide-react';
 import { useState } from 'react';
 import UploadModal from './UploadModal';
-import FilePermissionManager from './FilePermissionManager';
 
-interface Workspace {
+export interface Workspace {
   name: string;
   chats: string[];
 }
